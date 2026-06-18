@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dharmagra - Parent Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #E53935;
+    --red-light: #FFEBEE;
+    --navy: #1A237E;
+    --navy-mid: #283593;
+    --blue-light: #E8EAF6;
+    --gold: #FFC107;
+    --green: #43A047;
+    --text-dark: #1A1A2E;
+    --text-mid: #555770;
+    --text-light: #888AA0;
+    --bg: #F5F6FA;
+    --white: #ffffff;
+    --border: #E8E8F0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    position: relative;
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    background: var(--white);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .topnav-left { display: flex; align-items: center; gap: 14px; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { display: block; width: 22px; height: 2.5px; background: var(--text-dark); border-radius: 2px; }
+  .topnav-title h2 { font-size: 17px; font-weight: 700; color: var(--text-dark); }
+  .topnav-title p { font-size: 12px; color: var(--text-mid); margin-top: 1px; }
+  .topnav-title p span { color: var(--red); font-weight: 700; }
+  .topnav-user {
+    display: flex; align-items: center; gap: 8px;
+    border: 1.5px solid var(--border); border-radius: 24px;
+    padding: 6px 12px 6px 6px; cursor: pointer;
+  }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; font-weight: 700;
+  }
+  .topnav-user span { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+  .topnav-user svg { color: var(--text-mid); }
+
+  /* ── CONTENT ── */
+  .content { padding: 14px 14px 0; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── CHILD CARD ── */
+  .child-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .child-avatar-wrap { position: relative; flex-shrink: 0; }
+  .child-avatar {
+    width: 78px; height: 78px; border-radius: 50%;
+    background: linear-gradient(145deg, #e3f0ff, #c5d8f5);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; border: 3px solid #d0e4ff;
+  }
+  .child-avatar svg { width: 56px; height: 56px; }
+  .cam-icon {
+    position: absolute; bottom: 2px; right: 2px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--white); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .child-info { flex: 1; min-width: 0; }
+  .child-info h3 { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
+  .child-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-mid); }
+  .child-date { font-size: 11.5px; color: var(--text-mid); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+  .badge-completed {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #E8F5E9; border: 1.5px solid #A5D6A7;
+    border-radius: 20px; padding: 4px 10px;
+    font-size: 11.5px; font-weight: 600; color: var(--green);
+    margin-bottom: 8px;
+  }
+  .btn-view-profile {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; font-size: 12.5px; font-weight: 600;
+    color: var(--text-dark); cursor: pointer; background: var(--white);
+    width: 100%; text-decoration: none;
+  }
+
+  /* ── GRID 2 ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 13.5px; font-weight: 700; color: var(--text-dark);
+  }
+  .card-link { font-size: 11.5px; color: var(--navy); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 2px; }
+
+  /* ── SCORE CARD ── */
+  .score-card { grid-column: 1; }
+  .score-inner { display: flex; align-items: center; gap: 10px; }
+  .donut-wrap { position: relative; width: 90px; height: 90px; flex-shrink: 0; }
+  .donut-wrap svg { width: 90px; height: 90px; transform: rotate(-90deg); }
+  .donut-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .donut-center .score-num { font-size: 20px; font-weight: 800; color: var(--text-dark); line-height: 1; }
+  .donut-center .score-den { font-size: 10px; color: var(--text-light); }
+  .score-label { font-size: 10px; color: var(--text-light); text-align: center; margin-top: 4px; }
+  .score-bars { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+  .score-bar-item { display: flex; flex-direction: column; gap: 2px; }
+  .score-bar-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-mid); }
+  .score-bar-label span:last-child { font-weight: 700; color: var(--text-dark); }
+  .bar-track { height: 5px; border-radius: 3px; background: #EEF0F5; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: var(--navy); }
+  .bar-fill.red { background: var(--red); }
+  .btn-red {
+    width: 100%; margin-top: 12px;
+    background: var(--red); color: white;
+    border: none; border-radius: 8px; padding: 11px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ── APPOINTMENT CARD ── */
+  .appt-card { grid-column: 2; }
+  .doc-info { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .doc-avatar {
+    width: 54px; height: 54px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0; position: relative;
+  }
+  .doc-online {
+    position: absolute; bottom: 1px; right: 1px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--green); border: 2px solid white;
+  }
+  .doc-name { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .doc-spec { font-size: 10.5px; color: var(--text-mid); margin-top: 1px; }
+  .doc-rating { display: flex; align-items: center; gap: 3px; font-size: 10.5px; color: var(--text-mid); margin-top: 3px; }
+  .doc-rating span { color: var(--gold); }
+  .appt-detail-box {
+    background: #FFF8F8; border-radius: 8px; padding: 8px 10px;
+    display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px;
+  }
+  .appt-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--text-mid); font-weight: 500; }
+  .appt-row svg { flex-shrink: 0; }
+  .btn-join {
+    width: 100%; background: var(--red); color: white;
+    border: none; border-radius: 8px; padding: 9px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    margin-bottom: 7px;
+  }
+  .btn-outline {
+    width: 100%; background: transparent; color: var(--text-dark);
+    border: 1.5px solid var(--border); border-radius: 8px; padding: 8px;
+    font-size: 11.5px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+
+  /* ── FULL-WIDTH CARDS ── */
+  .full-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .full-card-body { padding: 16px; }
+
+  /* ── SUPPORT CARD ── */
+  .support-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .support-item {
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px;
+    cursor: pointer;
+  }
+  .support-icon {
+    width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(135deg, #e3f0ff, #c5d8f5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .support-text h4 { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .support-text p { font-size: 11px; color: var(--text-mid); margin-top: 1px; }
+  .chevron { margin-left: auto; color: var(--text-light); }
+
+  /* ── ACTIVITIES ── */
+  .activities-list { display: flex; flex-direction: column; gap: 0; }
+  .activity-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .act-red { background: #FFEBEE; }
+  .act-blue { background: #E3F2FD; }
+  .act-orange { background: #FFF8E1; }
+  .activity-text h4 { font-size: 12.5px; font-weight: 700; color: var(--text-dark); }
+  .activity-text p { font-size: 11px; color: var(--text-mid); margin-top: 1px; }
+  .btn-start {
+    width: 100%; margin-top: 12px;
+    background: transparent; color: var(--red);
+    border: 1.5px solid var(--red); border-radius: 8px; padding: 10px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ── PROGRESS CARD ── */
+  .progress-outer { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+  .progress-chart { }
+  .chart-area { position: relative; height: 90px; margin: 10px 0 4px; }
+  .chart-labels-y { display: flex; flex-direction: column; justify-content: space-between; height: 90px; position: absolute; left: 0; top: 0; }
+  .chart-labels-y span { font-size: 9px; color: var(--text-light); }
+  .chart-svg-wrap { margin-left: 22px; }
+  .chart-months { display: flex; justify-content: space-between; margin-left: 22px; }
+  .chart-months span { font-size: 9.5px; color: var(--text-light); }
+  .progress-trophy {
+    background: linear-gradient(135deg, #FFFDE7, #FFF9C4);
+    border-radius: 10px; padding: 12px; text-align: center;
+    min-width: 100px;
+  }
+  .trophy-title { font-size: 12px; font-weight: 800; color: var(--red); margin-bottom: 2px; }
+  .trophy-sub { font-size: 10px; color: var(--text-mid); line-height: 1.4; }
+  .trophy-emoji { font-size: 40px; margin-top: 8px; }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions { background: var(--white); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+  .qa-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; }
+  .qa-grid { display: flex; justify-content: space-between; gap: 6px; }
+  .qa-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; cursor: pointer; }
+  .qa-icon {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--blue-light);
+  }
+  .qa-icon.red-bg { background: #FFEBEE; }
+  .qa-item span { font-size: 10.5px; font-weight: 600; color: var(--text-mid); text-align: center; }
+
+  /* ── FOOTER BANNER ── */
+  .footer-banner {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex; align-items: center; gap: 14px;
+    position: relative; overflow: hidden;
+  }
+  .footer-banner::after {
+    content: '';
+    position: absolute; right: 0; top: 0; bottom: 0; width: 45%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cellipse cx='160' cy='100' rx='80' ry='60' fill='rgba(255,255,255,0.04)'/%3E%3Cellipse cx='180' cy='60' rx='60' ry='50' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E") no-repeat center;
+    background-size: cover;
+    pointer-events: none;
+  }
+  .banner-icon { font-size: 38px; flex-shrink: 0; }
+  .banner-text h3 { font-size: 16px; font-weight: 800; color: white; }
+  .banner-text p { font-size: 10.5px; color: rgba(255,255,255,0.7); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 3px; }
+  /* silhouettes */
+  .banner-silhouette {
+    position: absolute; right: 14px; bottom: 0;
+    display: flex; align-items: flex-end; gap: 3px;
+    opacity: 0.25;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-around;
+    padding: 8px 4px 12px;
+    z-index: 200;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; }
+  .nav-item span { font-size: 10px; font-weight: 600; color: var(--text-light); }
+  .nav-item.active span { color: var(--red); }
+  .nav-item svg { color: var(--text-light); }
+  .nav-item.active svg { color: var(--red); }
+  .nav-fab {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--red); border: 4px solid var(--white);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(229,57,53,0.4);
+    margin-top: -20px; cursor: pointer; flex-shrink: 0;
+  }
+
+  /* ── ICONS (inline SVG helpers) ── */
+  .icon { display: inline-flex; }
+
+  /* ── OVERLAY ── */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 400;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+  }
+  .overlay.show { display: block; }
+  .overlay.visible { opacity: 1; }
+
+  /* ── LEFT SIDEBAR ── */
+  .sidebar {
+    position: fixed; top: 0; left: -310px; bottom: 0;
+    width: 290px;
+    background: var(--white);
+    z-index: 500;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar.open { left: 0; }
+
+  .sidebar-header {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    padding: 48px 20px 24px;
+    position: relative;
+  }
+  .sidebar-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .sidebar-close:hover { background: rgba(255,255,255,0.25); }
+  .sidebar-user-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 26px; font-weight: 800;
+    border: 3px solid rgba(255,255,255,0.3);
+    margin-bottom: 12px;
+  }
+  .sidebar-header h3 { font-size: 17px; font-weight: 700; color: white; }
+  .sidebar-header p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .sidebar-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.15); border-radius: 12px;
+    padding: 3px 10px; font-size: 10.5px; color: rgba(255,255,255,0.9);
+    margin-top: 8px; font-weight: 600;
+  }
+
+  .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+  .sidebar-section-label {
+    font-size: 10px; font-weight: 700; color: var(--text-light);
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 12px 20px 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 20px; cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .sidebar-item:hover { background: var(--bg); }
+  .sidebar-item.active { background: #EEF0FB; }
+  .sidebar-item.active::before {
+    content: '';
+    position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 4px; border-radius: 0 4px 4px 0;
+    background: var(--navy);
+  }
+  .sidebar-item-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--blue-light); flex-shrink: 0;
+  }
+  .sidebar-item.active .sidebar-item-icon { background: var(--navy); }
+  .sidebar-item.active .sidebar-item-icon svg { stroke: white !important; }
+  .sidebar-item-text { flex: 1; }
+  .sidebar-item-text h4 { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+  .sidebar-item.active .sidebar-item-text h4 { color: var(--navy); font-weight: 700; }
+  .sidebar-item-text p { font-size: 10.5px; color: var(--text-light); margin-top: 1px; }
+  .sidebar-badge-count {
+    background: var(--red); color: white;
+    font-size: 10px; font-weight: 700;
+    border-radius: 10px; padding: 2px 7px;
+  }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .sidebar-logout {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 10px;
+    cursor: pointer; background: #FFF3F3;
+    border: 1.5px solid #FFCDD2;
+    transition: background 0.15s;
+  }
+  .sidebar-logout:hover { background: #FFEBEE; }
+  .sidebar-logout span { font-size: 13px; font-weight: 600; color: var(--red); }
+
+  /* ── PROFILE DROPDOWN ── */
+  .profile-dropdown-wrap { position: relative; }
+  .profile-dropdown {
+    display: none;
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 230px;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 600;
+    transform: translateY(-6px);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .profile-dropdown.show { display: block; }
+  .profile-dropdown.visible { transform: translateY(0); opacity: 1; }
+
+  .pd-header {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .pd-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; font-weight: 800;
+    border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
+  }
+  .pd-name { font-size: 13px; font-weight: 700; color: white; }
+  .pd-email { font-size: 10.5px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+
+  .pd-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; cursor: pointer;
+    transition: background 0.15s; border: none;
+    background: transparent; width: 100%;
+  }
+  .pd-item:hover { background: var(--bg); }
+  .pd-item-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pd-item span { font-size: 13px; font-weight: 500; color: var(--text-dark); }
+  .pd-divider { height: 1px; background: var(--border); margin: 2px 0; }
+  .pd-item.danger .pd-item-icon { background: #FFEBEE; }
+  .pd-item.danger span { color: var(--red); }
+
+  /* hamburger animation */
+  .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+  .hamburger span { transition: transform 0.25s ease, opacity 0.2s ease; transform-origin: center; }
+
+  /* chevron rotate on dropdown open */
+  .topnav-user svg { transition: transform 0.2s ease; }
+  .topnav-user.open svg { transform: rotate(180deg); }
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- LEFT SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <button class="sidebar-close" id="sidebarClose">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="sidebar-user-avatar">A</div>
+    <h3>Aarav Sharma</h3>
+    <p>parent@dharmagra.com</p>
+    <div class="sidebar-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Premium Member
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Main Menu</div>
+
+    <div class="sidebar-item active">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Home</h4><p>Dashboard overview</p></div>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Child Profile</h4><p>Manage your child's info</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Reports</h4><p>Assessment history</p></div>
+      <span class="sidebar-badge-count">3</span>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Appointments</h4><p>Upcoming & past</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Learning</h4><p>Activities & games</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Uploaded Videos</h4><p>Your recordings</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">Support</div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Expert Support</h4><p>Chat with specialists</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Nearby Doctors</h4><p>Find specialists near you</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Reminders</h4><p>Notifications & alerts</p></div>
+      <span class="sidebar-badge-count">2</span>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">Account</div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>My Profile</h4><p>Account settings</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="sidebar-item">
+      <div class="sidebar-item-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div class="sidebar-item-text"><h4>Settings</h4><p>App preferences</p></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-logout" id="sidebarLogout">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Log Out</span>
+    </div>
+  </div>
+</aside>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-left">
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="topnav-title">
+      <h2>Good Morning, Parent! 👋</h2>
+      <p>Welcome back to <span>DHARMAGRA</span></p>
+    </div>
+  </div>
+  <div class="profile-dropdown-wrap">
+    <div class="topnav-user" id="profileBtn">
+      <div class="user-avatar">A</div>
+      <span>Aarav Sharma</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <!-- PROFILE DROPDOWN -->
+    <div class="profile-dropdown" id="profileDropdown">
+      <div class="pd-header">
+        <div class="pd-avatar">A</div>
+        <div>
+          <div class="pd-name">Aarav Sharma</div>
+          <div class="pd-email">parent@dharmagra.com</div>
+        </div>
+      </div>
+      <button class="pd-item">
+        <div class="pd-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
+        <span>My Profile</span>
+      </button>
+      <button class="pd-item">
+        <div class="pd-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Child Profile</span>
+      </button>
+      <button class="pd-item">
+        <div class="pd-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <span>Appointments</span>
+      </button>
+      <button class="pd-item">
+        <div class="pd-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span>Settings</span>
+      </button>
+      <div class="pd-divider"></div>
+      <button class="pd-item danger">
+        <div class="pd-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <span>Log Out</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="content">
+
+  <!-- CHILD CARD -->
+  <div class="child-card">
+    <div class="child-avatar-wrap">
+      <div class="child-avatar">
+        <!-- Child avatar SVG -->
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- body -->
+          <ellipse cx="50" cy="82" rx="22" ry="14" fill="#E53935"/>
+          <!-- head -->
+          <circle cx="50" cy="46" r="24" fill="#FDBCB4"/>
+          <!-- hair -->
+          <path d="M26 40 Q28 18 50 20 Q72 18 74 40 Q70 24 50 26 Q30 24 26 40Z" fill="#3E2723"/>
+          <!-- eyes -->
+          <ellipse cx="42" cy="44" rx="3" ry="3.5" fill="#3E2723"/>
+          <ellipse cx="58" cy="44" rx="3" ry="3.5" fill="#3E2723"/>
+          <circle cx="43" cy="43" r="1" fill="white"/>
+          <circle cx="59" cy="43" r="1" fill="white"/>
+          <!-- smile -->
+          <path d="M43 53 Q50 58 57 53" stroke="#C0706A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- ears -->
+          <ellipse cx="26" cy="47" rx="4" ry="5" fill="#FDBCB4"/>
+          <ellipse cx="74" cy="47" rx="4" ry="5" fill="#FDBCB4"/>
+          <!-- neck -->
+          <rect x="44" y="68" width="12" height="8" rx="4" fill="#FDBCB4"/>
+        </svg>
+      </div>
+      <div class="cam-icon">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+    </div>
+    <div class="child-info">
+      <div class="badge-completed">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#43A047" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Assessment Completed
+      </div>
+      <h3>Aarav Sharma</h3>
+      <div class="child-meta">
+        <div class="meta-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          8 Years, Male
+        </div>
+        <div class="meta-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Grade 2
+        </div>
+      </div>
+      <div class="child-date">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Last Assessment: 24 May 2025
+      </div>
+      <button class="btn-view-profile">
+        <span style="display:flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          View Child Profile
+        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ASSESSMENT + APPOINTMENT -->
+  <div class="grid2">
+
+    <!-- Assessment Score -->
+    <div class="card score-card" style="grid-column:1;">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Assessment Score
+        </div>
+        <a href="#" class="card-link">View Details <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="score-inner">
+        <div>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="36" fill="none" stroke="#EEF0F5" stroke-width="10"/>
+              <!-- red part ~36% -->
+              <circle cx="45" cy="45" r="36" fill="none" stroke="var(--red)" stroke-width="10"
+                stroke-dasharray="226.2" stroke-dashoffset="145" stroke-linecap="round"/>
+              <!-- blue part ~64% -->
+              <circle cx="45" cy="45" r="36" fill="none" stroke="var(--navy)" stroke-width="10"
+                stroke-dasharray="226.2" stroke-dashoffset="81.4" stroke-linecap="round"
+                transform="rotate(129.6 45 45)"/>
+            </svg>
+            <div class="donut-center">
+              <div class="score-num">64</div>
+              <div class="score-den">/ 100</div>
+            </div>
+          </div>
+          <div class="score-label">Overall Score</div>
+        </div>
+        <div class="score-bars">
+          <div class="score-bar-item">
+            <div class="score-bar-label"><span>Communication</span><span>65</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+          </div>
+          <div class="score-bar-item">
+            <div class="score-bar-label"><span>Social Interaction</span><span style="color:var(--red)">72</span></div>
+            <div class="bar-track"><div class="bar-fill red" style="width:72%"></div></div>
+          </div>
+          <div class="score-bar-item">
+            <div class="score-bar-label"><span>Behavior</span><span style="color:var(--red)">58</span></div>
+            <div class="bar-track"><div class="bar-fill red" style="width:58%"></div></div>
+          </div>
+          <div class="score-bar-item">
+            <div class="score-bar-label"><span>Attention</span><span>60</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:60%"></div></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-red">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        View Full Report
+      </button>
+    </div>
+
+    <!-- Appointment -->
+    <div class="card appt-card" style="grid-column:2;">
+      <div class="card-header">
+        <div class="card-title" style="font-size:12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Upcoming Appointment
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
+      </div>
+      <div class="doc-info">
+        <div class="doc-avatar" style="position:relative;">
+          👩‍⚕️
+          <div class="doc-online"></div>
+        </div>
+        <div>
+          <div class="doc-name">Dr. Neha Sharma</div>
+          <div class="doc-spec">Child Development<br>Specialist</div>
+          <div class="doc-rating">
+            <span>★</span> 4.8 <span style="color:var(--text-light)">(120 reviews)</span>
+          </div>
+        </div>
+      </div>
+      <div class="appt-detail-box">
+        <div class="appt-row">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          24 May 2025, Saturday
+        </div>
+        <div class="appt-row">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          10:00 AM
+        </div>
+        <div class="appt-row">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          Video Consultation
+        </div>
+      </div>
+      <button class="btn-join">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Join Consultation
+      </button>
+      <button class="btn-outline">
+        View Appointment
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- SUPPORT + ACTIVITIES -->
+  <div class="grid2">
+    <!-- Recommended Support -->
+    <div class="card" style="grid-column:1;">
+      <div class="card-header">
+        <div class="card-title" style="font-size:12.5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Recommended Support
+        </div>
+      </div>
+      <p style="font-size:10px;color:var(--text-light);margin-bottom:10px;margin-top:-6px;">Based on your child's assessment</p>
+      <div class="support-grid">
+        <div class="support-item">
+          <div class="support-icon">👩‍⚕️</div>
+          <div class="support-text">
+            <h4>Nearby Doctors</h4>
+            <p>Find top specialists near you</p>
+          </div>
+          <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="support-item">
+          <div class="support-icon" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">🏢</div>
+          <div class="support-text">
+            <h4>Therapy Centers</h4>
+            <p>Explore therapy centers near your location</p>
+          </div>
+          <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+      <button class="btn-red">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Find Support Near Me
+      </button>
+    </div>
+
+    <!-- Today's Activities -->
+    <div class="card" style="grid-column:2;">
+      <div class="card-header">
+        <div class="card-title" style="font-size:12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Today's Activities
+        </div>
+        <a href="#" class="card-link">View All <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
+      <div class="activities-list">
+        <div class="activity-item">
+          <div class="activity-icon act-red">🧩</div>
+          <div class="activity-text">
+            <h4>Social Interaction Activity</h4>
+            <p>Improve communication skills</p>
+          </div>
+          <svg class="chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon act-blue">🎯</div>
+          <div class="activity-text">
+            <h4>Attention Game</h4>
+            <p>Focus and concentration practice</p>
+          </div>
+          <svg class="chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon act-orange">📖</div>
+          <div class="activity-text">
+            <h4>Emotions Explorer</h4>
+            <p>Understanding emotions</p>
+          </div>
+          <svg class="chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+      <button class="btn-start">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--red)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Start Learning
+      </button>
+    </div>
+  </div>
+
+  <!-- CHILD PROGRESS -->
+  <div class="card" style="padding:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--text-dark);">Child Progress</div>
+        <div style="font-size:11px;color:var(--text-light);">Assessment Score Over Time</div>
+      </div>
+      <a href="#" class="card-link">View History <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></a>
+    </div>
+    <div class="progress-outer">
+      <div class="progress-chart">
+        <div style="position:relative;">
+          <!-- Y labels -->
+          <div style="display:flex;flex-direction:column;justify-content:space-between;height:80px;position:absolute;left:0;top:0;">
+            <span style="font-size:9px;color:var(--text-light);">100</span>
+            <span style="font-size:9px;color:var(--text-light);">50</span>
+            <span style="font-size:9px;color:var(--text-light);">0</span>
+          </div>
+          <div style="margin-left:26px;">
+            <svg width="100%" height="80" viewBox="0 0 240 80" preserveAspectRatio="none">
+              <!-- gridlines -->
+              <line x1="0" y1="0" x2="240" y2="0" stroke="#EEF0F5" stroke-width="1"/>
+              <line x1="0" y1="40" x2="240" y2="40" stroke="#EEF0F5" stroke-width="1"/>
+              <line x1="0" y1="80" x2="240" y2="80" stroke="#EEF0F5" stroke-width="1"/>
+              <!-- line: values 42,50,56,61,64 mapped to y (0=80,100=0) -->
+              <!-- Jan(0,46.4) Feb(60,50) Mar(120,46.4) Apr(180,39.2) May(240,36) -->
+              <polyline
+                points="0,46.4 60,50 120,46.4 180,39.2 240,36"
+                fill="none" stroke="var(--navy)" stroke-width="2.5" stroke-linejoin="round"/>
+              <!-- dots -->
+              <circle cx="0"   cy="46.4" r="4.5" fill="var(--navy)" stroke="white" stroke-width="2"/>
+              <circle cx="60"  cy="50"   r="4.5" fill="var(--navy)" stroke="white" stroke-width="2"/>
+              <circle cx="120" cy="46.4" r="4.5" fill="var(--navy)" stroke="white" stroke-width="2"/>
+              <circle cx="180" cy="39.2" r="4.5" fill="var(--navy)" stroke="white" stroke-width="2"/>
+              <circle cx="240" cy="36"   r="6"   fill="var(--red)"  stroke="white" stroke-width="2"/>
+              <!-- value labels -->
+              <text x="0"   y="40"   font-size="9" fill="var(--text-mid)" text-anchor="middle">42</text>
+              <text x="60"  y="44"   font-size="9" fill="var(--text-mid)" text-anchor="middle">50</text>
+              <text x="120" y="40"   font-size="9" fill="var(--text-mid)" text-anchor="middle">56</text>
+              <text x="180" y="33"   font-size="9" fill="var(--text-mid)" text-anchor="middle">61</text>
+              <text x="240" y="29"   font-size="9" fill="var(--red)" font-weight="700" text-anchor="middle">64</text>
+            </svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-left:26px;margin-top:4px;">
+            <span style="font-size:9.5px;color:var(--text-light);">Jan</span>
+            <span style="font-size:9.5px;color:var(--text-light);">Feb</span>
+            <span style="font-size:9.5px;color:var(--text-light);">Mar</span>
+            <span style="font-size:9.5px;color:var(--text-light);">Apr</span>
+            <span style="font-size:9.5px;color:var(--text-light);">May</span>
+          </div>
+        </div>
+      </div>
+      <div class="progress-trophy">
+        <div class="trophy-title">Keep it up!</div>
+        <div class="trophy-sub">Your child is making steady progress.</div>
+        <div style="font-size:38px;margin-top:8px;text-align:center;">🏆</div>
+        <div style="display:flex;justify-content:center;gap:4px;margin-top:4px;">
+          <span style="color:var(--gold);font-size:14px;">✦</span>
+          <span style="color:var(--red);font-size:10px;">✦</span>
+          <span style="color:#42A5F5;font-size:12px;">✦</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <div class="qa-title">Quick Actions</div>
+    <div class="qa-grid">
+      <div class="qa-item">
+        <div class="qa-icon red-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <span>Reports</span>
+      </div>
+      <div class="qa-item">
+        <div class="qa-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <span>Appointments</span>
+      </div>
+      <div class="qa-item">
+        <div class="qa-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+        <span>Uploaded Videos</span>
+      </div>
+      <div class="qa-item">
+        <div class="qa-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span>Expert Support</span>
+      </div>
+      <div class="qa-item">
+        <div class="qa-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <span>Reminders</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER BANNER -->
+  <div class="footer-banner">
+    <div style="font-size:36px;flex-shrink:0;">❤️</div>
+    <div>
+      <div style="font-size:16px;font-weight:800;color:white;">Happy Children Happy Parents</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-top:4px;">INSPIRING HOPE, THROUGH KINDNESS</div>
+    </div>
+    <!-- Family silhouettes -->
+    <svg style="position:absolute;right:10px;bottom:0;opacity:0.2;" width="110" height="70" viewBox="0 0 110 70">
+      <!-- adult 1 -->
+      <ellipse cx="30" cy="20" rx="8" ry="9" fill="white"/>
+      <rect x="22" y="29" width="16" height="28" rx="4" fill="white"/>
+      <!-- adult 2 -->
+      <ellipse cx="55" cy="22" rx="7" ry="8" fill="white"/>
+      <rect x="48" y="30" width="14" height="26" rx="4" fill="white"/>
+      <!-- child -->
+      <ellipse cx="78" cy="30" rx="6" ry="7" fill="white"/>
+      <rect x="72" y="37" width="12" height="20" rx="4" fill="white"/>
+    </svg>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--red)" stroke="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <span>Home</span>
+  </div>
+  <div class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Reports</span>
+  </div>
+  <div class="nav-item" style="flex:none;">
+    <div class="nav-fab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
+    <span style="font-size:9.5px;color:var(--text-light);margin-top:2px;">Assess Child</span>
+  </div>
+  <div class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    <span>Learning</span>
+  </div>
+  <div class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+  </div>
+</nav>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('overlay');
+  const sidebarClose = document.getElementById('sidebarClose');
+  const profileBtn   = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+
+  /* ── SIDEBAR ── */
+  function openSidebar() {
+    overlay.classList.add('show');
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+    sidebar.classList.add('open');
+    hamburger.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    overlay.classList.remove('visible');
+    sidebar.classList.remove('open');
+    hamburger.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(() => overlay.classList.remove('show'), 280);
+  }
+
+  hamburger.addEventListener('click', () => {
+    closeDropdown();
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  sidebarClose.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', () => { closeSidebar(); closeDropdown(); });
+
+  /* ── PROFILE DROPDOWN ── */
+  function openDropdown() {
+    profileDropdown.classList.add('show');
+    profileBtn.classList.add('open');
+    requestAnimationFrame(() => profileDropdown.classList.add('visible'));
+  }
+  function closeDropdown() {
+    profileDropdown.classList.remove('visible');
+    profileBtn.classList.remove('open');
+    setTimeout(() => profileDropdown.classList.remove('show'), 200);
+  }
+
+  profileBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeSidebar();
+    profileDropdown.classList.contains('show') ? closeDropdown() : openDropdown();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  /* ── SIDEBAR NAV ITEMS ── */
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  /* ── BOTTOM NAV ── */
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

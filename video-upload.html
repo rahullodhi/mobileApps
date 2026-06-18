@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <title>DHARMAGRA Upload Videos</title>
+</head>
+
+<body>
+     <header class="app-header">
+
+    <div class="header-left">
+
+        <a href="login.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path d="M15 18L9 12L15 6"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+        </a>
+
+        <div class="title-area">
+            <h1>Upload Video</h1>
+        </div>
+
+    </div>
+
+    <div class="profile-card">
+
+        <div class="profile-icon">
+            <img src="https://media.licdn.com/dms/image/v2/D4D03AQGfmmtap9UGSw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1668447329811?e=2147483647&v=beta&t=0KlNkR86z7JOy1hLVPWrASGpK72NTRUy26PAxBsZ-QY" alt="">
+        </div>
+
+        <!-- <div class="profile-info">
+            <h4>Hello, Parent!</h4>
+            <span>Parent Account</span>
+        </div> -->
+
+    </div>
+
+</header>
+
+    <div class="uploadvideo">
+     
+
+        <div class="card intro">
+            <div class="iconvideo"><i class="fa-solid fa-video"></i></div>
+            <div>
+                <h2>Help Us Understand Your Child Better</h2>
+                <p>Please upload videos of your child as shown in the examples below. These videos help experts provide
+                    better analysis.</p>
+            </div>
+        </div>
+
+        <div class="title">Please upload this type of videos</div>
+
+        <div class="videoRow">
+            <div class="thumb"><video autoplay muted controls src="video/eye_contact_and_name_response.mp4"></video></div>
+            <div class="info"><span class="badge green">1</span>
+                <h3>Eye Contact & Name Response</h3>
+                <p>Record your child Eye Contact & Name Response.</p>
+            </div>
+        </div>
+        <div class="videoRow">
+            <div class="thumb"><video autoplay muted controls src="video/fine_motor_skills.mp4"></video></div>
+            <div class="info"><span class="badge purple">2</span>
+                <h3>Fine Motor Skills</h3>
+                <p>Record video Fine Motor Skills.</p>
+            </div>
+        </div>
+        <div class="videoRow">
+            <div class="thumb"><video autoplay muted controls src="video/joint_attention.mp4"></video></div>
+            <div class="info"><span class="badge orange">3</span>
+                <h3>Daily Routine Activity</h3>
+                <p>Record video eating, dressing and  daily routine activity.</p>
+            </div>
+        </div>
+        <div class="videoRow">
+            <div class="thumb"><video autoplay muted controls src="video/receptive_language.mp4"></video></div>
+            <div class="info"><span class="badge blue">4</span>
+                <h3>Communication</h3>
+                <p>Record video receptive languages speaking and following instructions.</p>
+            </div>
+        </div>
+
+        <div class="card upload">
+            <h2>Upload Your Videos</h2>
+            <p>You can upload up to 4 videos</p>
+            <div class="drop">
+                <input type="file" id="files" accept="video/*" multiple>
+                <label for="files" class="label">
+                    <h3>☁ Upload Videos</h3>
+                    <p>Tap to upload or drag & drop</p>
+                </label>
+            </div>
+            <div class="preview" id="preview"></div>
+        </div>
+
+       <div class="privacy-box">
+    <div class="privacy-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none" viewBox="0 0 24 24">
+            <path d="M12 2L4 5V11C4 16.5 7.4 21.3 12 22C16.6 21.3 20 16.5 20 11V5L12 2Z"
+                stroke="#22C55E"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            <path d="M9 12L11 14L15 10"
+                stroke="#22C55E"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <div class="privacy-content">
+        <h4>Your videos are safe and confidential.</h4>
+        <p>We use them only for analysis and will never share with anyone.</p>
+    </div>
+</div>
+
+        <button class="login-btn">Submit Videos</button>
+    </div>
+
+    <script>
+        const input = document.getElementById("files");
+        const preview = document.getElementById("preview");
+
+        input.addEventListener("change", function () {
+
+            preview.innerHTML = "";
+
+            const files = [...this.files];
+
+            files.forEach((file, index) => {
+
+                const videoCard = document.createElement("div");
+                videoCard.classList.add("video-card-preview");
+
+                const video = document.createElement("video");
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+
+
+                const title = document.createElement("p");
+                title.innerText = `Video ${index + 1}`;
+
+                videoCard.appendChild(video);
+                videoCard.appendChild(title);
+
+                preview.appendChild(videoCard);
+            });
+
+        });
+    </script>
+</body>
+
+</html>

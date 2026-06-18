@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question Assignment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  :root{
+    --navy:#0b1f4d;
+    --navy-light:#13306e;
+    --green:#1aa15c;
+    --green-bg:#e9f8ef;
+    --green-border:#bfe9cf;
+    --red:#e8423d;
+    --red-bg:#fdecec;
+    --red-border:#f6c9c7;
+    --yellow:#f5a623;
+    --yellow-bg:#fff5e3;
+    --grey:#e7e9ee;
+    --grey-text:#8b93a7;
+    --ink:#1c2b4a;
+    --card-bg:#ffffff;
+    --page-bg:#f4f6fb;
+    --lavender:#eef1fb;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    font-size:16px;
+
+    --primary:#032d74;
+    --secondary:#ff2d46;
+    --bg:#f8f8f8;
+    --text:#0d2c63;
+    --white:#ffffff;
+    --gray: #667085;
+
+  }
+  .app{
+    width:100%;
+    max-width:430px;  
+    min-height:100vh;
+    margin: auto;
+    
+    position:relative;
+    overflow:hidden;
+    padding-bottom:40px;
+  }
+  .last-button{
+    padding: 15px;
+    margin-top: 10px;
+  }
+
+  /* ===== HEADER ===== */
+  .app-header{
+    display:flex;
+    align-items:center;
+    border-bottom: 1px solid #eceef2;
+    justify-content:space-between;
+    padding:22px 20px 16px;
+    background:#fff;
+  }
+  .header-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  
+  .header-titles h1{
+    margin:0;
+    font-size:14px;
+    color:var(--navy);
+    font-weight:800;
+    letter-spacing:.2px;
+  }
+  .header-titles p{
+    margin:2px 0 0;
+    font-size:.82rem;
+    color:var(--grey-text);
+  }
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+  }
+  .avatar{
+    width:35px;height:35px;
+    border-radius:50%;
+    background:#ffe6c9;
+    color: #f7911b;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+    flex:none;
+  }
+  .header-right .hello{
+    font-size:12px;
+    color:var(--navy);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .header-right .chev{
+    color:var(--navy);
+    font-size:.7rem;
+  }
+
+  /* ===== SCORE + SUPPORT ROW ===== */
+  .top-row{
+    display:flex;
+    gap:14px;
+    padding:18px 15px 0;
+    align-items:stretch;
+  }
+
+  .score-card{
+   /* flex: 1; */
+    background: var(--card-bg);
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .score-ring-wrap{
+    position:relative;
+    width:100px;height:100px;
+    flex:none;
+  }
+  .score-ring-wrap svg{
+    width:100%;height:100%;
+    transform:rotate(-90deg);
+  }
+  .ring-bg{
+    fill:none;
+    stroke:var(--grey);
+    stroke-width:8;
+  }
+  .ring-fg{
+    fill:none;
+    stroke:var(--red);
+    stroke-width:8;
+    stroke-linecap:round;
+    transition:stroke-dasharray .5s ease, stroke .3s ease;
+  }
+  .score-ring-text{
+    position:absolute;
+    top:0;left:0;width:100%;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .score-ring-text .num{
+    font-size:1.25rem;
+    font-weight:800;
+    color:var(--navy);
+    line-height:1;
+  }
+  .score-ring-text .denom{
+    font-size: 18px;
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .score-info{flex:1;}
+  .score-info .label{
+   font-size: 15px;
+    color: var(--primary);
+    font-weight: 400;
+  }
+  .score-info .value{
+        font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0;
+  }
+  .score-info .breakdown{
+    font-size:.78rem;
+    font-weight:600;
+  }
+  .score-info .breakdown .ok{color:var(--green);}
+  .score-info .breakdown .no{color:var(--red);}
+  .score-info .breakdown .dot{color:var(--grey-text); margin:0 4px;}
+
+  .support-card{
+  flex: 1;
+    background: #f4f6fc9e;
+    border-radius: 10px;
+    padding: 12px 8px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    align-items: center;
+    box-shadow: 0 0 2px #ddd;
+  }
+  
+  .support-card:active{transform:scale(.98);}
+  .support-icon{
+   width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #1d3b97;
+    border: 1px solid #ddd;
+  }
+  .support-card .need{
+    font-size:.75rem;
+    color:#5b6486;
+    margin:0;
+  }
+  .support-card .talk{
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ===== PROGRESS SECTION ===== */
+  .progress-card{
+   margin: 18px 16px 0;
+    border-radius: 10px;
+    padding: 20px 5px;
+   box-shadow: 0 0 3px #d8d6d6e8;
+  }
+  .progress-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    padding: 0 12px;
+  }
+  .progress-head .ptitle{
+   font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .progress-head .pcount{
+    font-size:.95rem;
+    font-weight:800;
+    color:var(--navy);
+  }
+
+  .progress-track{
+    position:relative;
+    height:4px;
+    background:var(--grey);
+    border-radius:4px;
+    margin:0 14px 20px;
+  }
+  .progress-fill{
+    position:absolute;
+    top:0;left:0;
+    height:100%;
+    border-radius:4px;
+    background:var(--navy);
+    width:0%;
+    transition:width .35s ease;
+  }
+
+  .step-row{
+    display:flex;
+    justify-content:space-between;
+    gap:4px;
+  }
+  .step-dot{
+   width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: var(--grey);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    flex: none;
+    transition: background .25s, color .25s, transform .15s;
+    position: relative;
+  }
+  
+
+  .step-dot.current{
+    background:var(--navy);
+    color:#fff;
+    box-shadow:0 0 0 4px rgba(11,31,77,.12);
+  }
+  .step-dot.correct{
+    background:var(--green);
+    color:#fff;
+  }
+  .step-dot.incorrect{
+    background:var(--red);
+    color:#fff;
+  }
+  .step-dot.skipped{
+    background:var(--yellow);
+    color:#fff;
+  }
+
+  /* ===== QUESTION CARD ===== */
+  .question-card{
+    margin: 18px 15px 0;
+    background: 10px;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 2px #ddd;
+  }
+  .q-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .q-meta .qnum{
+   color: var(--secondary);
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .q-meta .qmarks{
+    background:var(--lavender);
+    color:var(--navy);
+    font-weight:700;
+    font-size:11px;
+    padding:5px 14px;
+    border-radius:20px;
+  }
+  .q-text{
+    font-size:16px;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 20px;
+    line-height:1.4;
+  }
+
+  .options-row{
+    display:flex;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .opt-card{
+    flex: 1;
+    border-radius: 10px;
+    border: 1.5px solid var(--grey);
+    background: #fff;
+    padding: 15px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .2s ease;
+    user-select: none;
+  }
+  
+  
+  .opt-icon{
+    width:40px;height:40px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;
+    color:#fff;
+    border:2px dashed transparent;
+  }
+  .opt-yes .opt-icon{background:#c9ecd6;}
+  .opt-yes .opt-icon svg{stroke:var(--green);}
+  .opt-no .opt-icon{background:#fbd2d0;}
+  .opt-no .opt-icon svg{stroke:var(--red);}
+  .opt-label{
+    font-weight:800;
+    font-size:1.05rem;
+  }
+  .opt-yes .opt-label{color:var(--green);}
+  .opt-no .opt-label{color:var(--red);}
+
+  .opt-card.opt-yes.selected{
+    background:var(--green-bg);
+    border-color:var(--green-border);
+  }
+  .opt-card.opt-no.selected{
+    background:var(--red-bg);
+    border-color:var(--red-border);
+  }
+  .opt-card.disabled-look{
+    opacity:.45;
+    cursor:not-allowed;
+    transform:none !important;
+  }
+  .opt-card.locked{cursor:not-allowed;}
+
+  .hint-box{
+    background:var(--lavender);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    font-size:.85rem;
+    color:#3b4670;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:4px;
+  }
+  .hint-box .bulb{flex:none; font-size:1rem;}
+
+  /* ===== NAV BUTTONS ===== */
+  .nav-row{
+    display:flex;
+    gap:10px;
+    margin:18px 20px 0;
+  }
+  .nav-btn{
+    flex:1;
+    border-radius:6px;
+    padding:10px 10px;
+    font-weight:700;
+    font-size:.92rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    border:1.5px solid transparent;
+    transition:all .2s ease;
+  }
+  .nav-btn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
+  .btn-prev{
+    background:#fff;
+    border-color:var(--primary);
+    color:var(--primary);
+  }
+  
+  
+  .btn-skip{
+    background:#fff;
+    border-color:var(--yellow);
+    color:var(--yellow);
+  }
+ 
+  .btn-next{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+  
+
+  /* decorative bottom wave */
+  .wave-wrap{
+    position:relative;
+    margin-top:30px;
+    height:90px;
+    overflow:hidden;
+  }
+  .wave-wrap svg{
+    position:absolute;
+    bottom:0;left:0;
+    width:100%;
+  }
+
+  .value{
+    font-size: 20px;
+    color: var(--secondary);
+    font-weight: 600;
+    text-align: center;
+  }
+ 
+ .value label {
+    font-size: 20px;
+    display: block;
+    border-top: 2px solid;
+    color: var(--primary);
+}
+
+</style>
+</head>
+<body>
+
+     <header class="app-header">
+
+    <div class="header-left">
+
+        <a href="starttest.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path d="M15 18L9 12L15 6"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+        </a>
+
+        <div class="title-area">
+            <h1>Question Assignment</h1>
+        </div>
+
+    </div>
+
+    <div class="profile-card">
+
+        <div class="profile-icon">
+            <img src="https://media.licdn.com/dms/image/v2/D4D03AQGfmmtap9UGSw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1668447329811?e=2147483647&v=beta&t=0KlNkR86z7JOy1hLVPWrASGpK72NTRUy26PAxBsZ-QY" alt="">
+        </div>
+
+        <!-- <div class="profile-info">
+            <h4>Hello, Parent!</h4>
+            <span>Parent Account</span>
+        </div> -->
+
+    </div>
+
+</header>
+
+<div class="app">
+  <!-- SCORE + SUPPORT -->
+  <div class="top-row">
+    <div class="score-card">
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+          <circle class="ring-fg" id="ringFg" cx="50" cy="50" r="42" stroke-dasharray="0 264"></circle>
+        </svg>
+        <div class="score-ring-text">
+          <!-- <div class="num" id="scoreNum">0</div> -->
+        <p class="value"><span id="scoreVal">0</span><span>0</span> <label>100</label> </p>
+
+          <!-- <div class="denom">/10</div> -->
+        </div>
+      </div>
+      <!-- <div class="score-info">
+        <p class="label">Your Score</p>
+        <p class="value"><span id="scoreVal">0</span><span>0</span> / 100 </p>
+        <p class="breakdown">
+          
+        </p>
+      </div> -->
+    </div>
+
+    <div class="support-card">
+      <div class="support-icon"><i class="fa-solid fa-headset"></i></div>
+      <div>
+         <p class="need">Need Help?</p>
+      <p class="talk">Talk to our expert</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-card">
+    <div class="progress-head">
+      <span class="ptitle">Question Progress</span>
+      <span class="pcount"><span id="curStepLabel">1</span> / 10</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="step-row" id="stepRow"></div>
+  </div>
+
+  <!-- QUESTION CARD -->
+  <div class="question-card">
+    <div class="q-meta">
+      <span class="qnum">Question <span id="qIndex">1</span> of 10</span>
+      <span class="qmarks">Marks: <span id="qMarks">10</span></span>
+    </div>
+    <p class="q-text" id="qText">Loading question...</p>
+
+    <div class="options-row">
+      <div class="opt-card opt-yes" data-ans="yes">
+        <div class="opt-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <span class="opt-label">Yes</span>
+      </div>
+      <div class="opt-card opt-no" data-ans="no">
+        <div class="opt-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <span class="opt-label">No</span>
+      </div>
+    </div>
+
+    <div class="hint-box" id="hintBox">
+      <span class="bulb"> <i class="fa-solid fa-lightbulb"></i></span>
+      <span id="qHint">Hint goes here.</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" id="btnPrev">
+  <i class="fa-solid fa-arrow-left"></i>
+  Previous
+</button>
+
+<button class="nav-btn btn-skip" id="btnSkip">
+  <i class="fa-solid fa-forward-step"></i>
+  Skip
+</button>
+
+<button class="nav-btn btn-next" id="btnNext">
+  Next
+  <i class="fa-solid fa-arrow-right"></i>
+</button>
+  </div>
+
+  <div class="last-button">
+     <a class="login-btn" href="normal-report.html">Generate Report</a>
+  </div>
+  
+
+</div>
+
+<script>
+$(function(){
+
+  // ===== QUESTION DATA (simple form-style questions, no right/wrong) =====
+  const questions = [
+    { text: "Is the sun a star?", hint: "The sun gives us light and heat just like other stars.", marks: 10 },
+    { text: "Is it important to drink water every day?", hint: "Drinking water helps us stay healthy and active.", marks: 10 },
+    { text: "Do fish breathe air like humans?", hint: "Fish use gills to breathe underwater, not lungs.", marks: 10 },
+    { text: "Is the Earth bigger than the Moon?", hint: "The Earth is much larger than its moon.", marks: 10 },
+    { text: "Do plants need sunlight to grow?", hint: "Sunlight helps plants make their food through photosynthesis.", marks: 10 },
+    { text: "Is ice hotter than water?", hint: "Ice is frozen water and is colder, not hotter.", marks: 10 },
+    { text: "Do we need oxygen to breathe?", hint: "Our body needs oxygen to survive and stay active.", marks: 10 },
+    { text: "Is a triangle a shape with four sides?", hint: "A triangle has only three sides, not four.", marks: 10 },
+    { text: "Should we brush our teeth twice a day?", hint: "Brushing twice a day keeps our teeth clean and healthy.", marks: 10 },
+    { text: "Can birds swim underwater like fish?", hint: "Most birds fly in the sky; only a few can swim.", marks: 10 }
+  ];
+
+  const TOTAL = questions.length;
+
+  // state per question: status -> 'unanswered' | 'yes' | 'no' | 'skipped'
+  const state = questions.map(() => ({ status: 'unanswered' }));
+
+  let current = 0; // 0-indexed
+
+  const $stepRow = $('#stepRow');
+  const $progressFill = $('#progressFill');
+  const $qText = $('#qText');
+  const $qHint = $('#qHint');
+  const $qIndex = $('#qIndex');
+  const $qMarks = $('#qMarks');
+  const $curStepLabel = $('#curStepLabel');
+  const $btnPrev = $('#btnPrev');
+  const $btnSkip = $('#btnSkip');
+  const $btnNext = $('#btnNext');
+  const $ringFg = $('#ringFg');
+  const $scoreNum = $('#scoreNum');
+  const $scoreVal = $('#scoreVal');
+  const $yesCount = $('#yesCount');
+  const $noCount = $('#noCount');
+
+  // build step dots
+  function buildSteps(){
+    $stepRow.empty();
+    for(let i=0;i<TOTAL;i++){
+      const $dot = $('<button class="step-dot"></button>').text(i+1).attr('data-i', i);
+      $stepRow.append($dot);
+    }
+  }
+
+  function updateSteps(){
+    $stepRow.find('.step-dot').each(function(){
+      const i = parseInt($(this).attr('data-i'));
+      const st = state[i].status;
+      $(this).removeClass('current correct incorrect skipped');
+      if(i === current) $(this).addClass('current');
+      else if(st === 'yes') $(this).addClass('correct');   // green
+      else if(st === 'no') $(this).addClass('incorrect');  // red
+      else if(st === 'skipped') $(this).addClass('skipped'); // yellow
+    });
+  }
+
+  function updateProgressBar(){
+    const pct = (current / (TOTAL-1)) * 100;
+    $progressFill.css('width', pct + '%');
+    $curStepLabel.text(current+1);
+  }
+
+  function updateScore(){
+    let answered = 0, yes = 0, no = 0;
+    state.forEach(s=>{
+      if(s.status === 'yes'){ answered++; yes++; }
+      if(s.status === 'no'){ answered++; no++; }
+    });
+    $scoreNum.text(answered);
+    $scoreVal.text(answered);
+    $yesCount.text(yes + ' Yes');
+    $noCount.text(no + ' No');
+
+    // ring shows overall completion (answered out of total)
+    const circumference = 2 * Math.PI * 42;
+    const filled = (answered/TOTAL) * circumference;
+    $ringFg.attr('stroke-dasharray', filled + ' ' + circumference);
+   $ringFg.css('stroke', '#ff2d46');
+  }
+
+  function renderQuestion(){
+    const q = questions[current];
+    const s = state[current];
+
+    $qText.text(q.text);
+    $qHint.text(q.hint);
+    $qIndex.text(current+1);
+    $qMarks.text(q.marks);
+
+    const $yes = $('.opt-yes');
+    const $no = $('.opt-no');
+    $yes.removeClass('selected disabled-look locked');
+    $no.removeClass('selected disabled-look locked');
+
+    if(s.status === 'yes'){
+  $yes.addClass('selected');
+} else if(s.status === 'no'){
+  $no.addClass('selected');
+}
+    // unanswered or skipped -> both options remain free to click
+
+    // nav button states
+    $btnPrev.prop('disabled', current === 0);
+    if(current === TOTAL-1){
+      $btnNext.html('Finish &#10003;');
+    } else {
+      $btnNext.html('Next &#8594;');
+    }
+
+    updateSteps();
+    updateProgressBar();
+  }
+
+  // ===== OPTION CLICK =====
+  $(document).on('click', '.opt-card', function(){
+
+    const chosen = $(this).data('ans');
+
+    // answer ko hamesha update karo
+    state[current].status = chosen;
+
+    renderQuestion();
+    updateScore();
+});
+
+  // ===== SKIP =====
+  $btnSkip.on('click', function(){
+    const s = state[current];
+    // only mark as skipped if not already answered
+    if(s.status === 'unanswered'){
+      s.status = 'skipped';
+    }
+    goNext();
+  });
+
+  // ===== NEXT =====
+  $btnNext.on('click', function(){
+    goNext();
+  });
+
+  function goNext(){
+    if(current < TOTAL-1){
+      current++;
+      renderQuestion();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  // ===== PREVIOUS =====
+  $btnPrev.on('click', function(){
+    if(current > 0){
+      current--;
+      renderQuestion();
+    }
+  });
+
+  // ===== STEP DOT CLICK (jump to any step; skipped/unanswered stay selectable) =====
+  $(document).on('click', '.step-dot', function(){
+    const i = parseInt($(this).attr('data-i'));
+    current = i;
+    renderQuestion();
+  });
+
+  // init
+  buildSteps();
+  renderQuestion();
+  updateScore();
+
+});
+</script>
+
+</body>
+</html>

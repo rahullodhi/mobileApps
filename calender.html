@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Book Appointment</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .screen {
+    width: 100%;
+    max-width: 430px;
+    background: #f0f2f5;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: #fff;
+    padding: 14px 16px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .back-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid #ddd;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .back-btn svg { width: 18px; height: 18px; color: #222; }
+
+  .topbar-title h1 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.2;
+  }
+  .topbar-title p {
+    font-size: 11.5px;
+    color: #888;
+    margin-top: 1px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1.5px solid #eee;
+    border-radius: 22px;
+    padding: 5px 10px 5px 6px;
+    cursor: pointer;
+  }
+  .avatar-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #3d5af1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar-circle svg { width: 20px; height: 20px; color: #fff; }
+  .topbar-right-text { line-height: 1.2; }
+  .topbar-right-text .hello { font-size: 12.5px; font-weight: 700; color: #1a1a2e; }
+  .topbar-right-text .role { font-size: 10.5px; color: #888; }
+  .chevron-down { color: #555; margin-left: 2px; }
+
+  /* ── SCROLLABLE CONTENT ── */
+  .content {
+    padding: 14px 12px 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── DOCTOR CARD ── */
+  .doctor-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .doctor-img-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .doctor-img {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #c9d6ff, #e2e2e2);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .doctor-img svg { width: 52px; height: 52px; color: #7a9fff; }
+  .verified-badge {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 22px; height: 22px;
+    background: #3d5af1;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+  }
+  .verified-badge svg { width: 12px; height: 12px; color: #fff; }
+
+  .doctor-info { flex: 1; }
+  .doctor-info h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .doctor-info .specialty { font-size: 12.5px; color: #666; margin-top: 3px; }
+  .doctor-meta {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .stars { display: flex; align-items: center; gap: 3px; font-size: 12px; color: #555; }
+  .star-icon { color: #f5a623; font-size: 13px; }
+  .meta-dot { color: #ccc; font-size: 12px; }
+  .experience { font-size: 12px; color: #555; }
+  .location {
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 5px; font-size: 12px; color: #555;
+  }
+  .location svg { width: 13px; height: 13px; color: #e85d5d; flex-shrink: 0; }
+  .location .dist { color: #e85d5d; font-weight: 600; }
+
+  .happy-badge {
+    display: flex; flex-direction: column; align-items: center;
+    background: #fff3f3;
+    border-radius: 10px;
+    padding: 8px 10px;
+    gap: 2px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  .happy-badge .icon-row { display: flex; align-items: center; gap: 3px; }
+  .happy-badge svg { width: 16px; height: 16px; color: #e85d5d; }
+  .happy-badge .count { font-size: 14px; font-weight: 800; color: #e85d5d; }
+  .happy-badge .label { font-size: 10px; color: #e85d5d; font-weight: 500; text-align: center; }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .section-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14.5px; font-weight: 700; color: #1a1a2e;
+    margin-bottom: 14px;
+  }
+  .section-title svg { width: 18px; height: 18px; color: #3d5af1; }
+
+  /* ── DATE SELECTOR ── */
+  .date-row {
+    display: flex; gap: 8px; overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .date-row::-webkit-scrollbar { display: none; }
+
+  .date-btn {
+    display: flex; flex-direction: column; align-items: center;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 8px 10px;
+    min-width: 52px;
+    cursor: pointer;
+    background: #fff;
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+  .date-btn .day-label { font-size: 10px; color: #999; font-weight: 500; }
+  .date-btn .day-num { font-size: 20px; font-weight: 800; color: #1a1a2e; line-height: 1.1; }
+  .date-btn .month { font-size: 10px; color: #999; font-weight: 500; }
+  .date-btn.active {
+    background: #1a1a2e;
+    border-color: #1a1a2e;
+  }
+  .date-btn.active .day-label,
+  .date-btn.active .day-num,
+  .date-btn.active .month { color: #fff; }
+  .date-btn:not(.active):hover { border-color: #3d5af1; }
+
+  /* ── TIME SLOTS ── */
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .time-btn {
+    border: 1.5px solid #e8e8e8;
+    border-radius: 10px;
+    padding: 11px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+  }
+  .time-btn.active {
+    background: #1a1a2e;
+    border-color: #1a1a2e;
+    color: #fff;
+  }
+  .time-btn:not(.active):hover { border-color: #3d5af1; color: #3d5af1; }
+
+  .time-note {
+    display: flex; align-items: center; gap: 5px;
+    margin-top: 10px;
+    font-size: 11px; color: #999;
+  }
+  .time-note svg { width: 14px; height: 14px; color: #aaa; flex-shrink: 0; }
+
+  /* ── APPOINTMENT TYPE ── */
+  .appt-type-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .appt-type-btn {
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 14px 12px;
+    cursor: pointer;
+    background: #fff;
+    text-align: left;
+    transition: border-color .15s;
+    position: relative;
+  }
+  .appt-type-btn.active { border-color: #3d5af1; border-width: 2px; }
+  .radio-dot {
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .appt-type-btn.active .radio-dot {
+    border-color: #3d5af1;
+    background: #3d5af1;
+  }
+  .appt-type-btn.active .radio-dot::after {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .appt-icon-wrap {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: #fff0f0;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .appt-icon-wrap svg { width: 22px; height: 22px; color: #e85d5d; }
+  .appt-type-btn .type-name { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+  .appt-type-btn .type-desc { font-size: 11px; color: #888; margin-top: 3px; line-height: 1.4; }
+  .appt-type-btn .type-price { font-size: 14px; font-weight: 800; color: #e85d5d; margin-top: 8px; }
+
+  /* ── PATIENT DETAILS ── */
+  .patient-row {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    background: #fafafa;
+  }
+  .patient-info { display: flex; align-items: center; gap: 10px; }
+  .patient-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4e6ff, #b8d4ff);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .patient-name { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .patient-age { font-size: 12px; color: #888; margin-top: 1px; }
+  .chevron-right { color: #aaa; }
+  .chevron-right svg { width: 18px; height: 18px; }
+
+  .add-child-btn {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px;
+    border: 1.5px dashed #3d5af1;
+    border-radius: 12px;
+    padding: 13px;
+    background: transparent;
+    color: #3d5af1;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    transition: background .15s;
+  }
+  .add-child-btn:hover { background: #f0f3ff; }
+  .add-child-btn svg { width: 16px; height: 16px; }
+
+  /* ── NOTES ── */
+  .notes-textarea {
+    width: 100%;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #333;
+    resize: none;
+    font-family: inherit;
+    outline: none;
+    background: #fafafa;
+    line-height: 1.5;
+    transition: border-color .15s;
+  }
+  .notes-textarea:focus { border-color: #3d5af1; background: #fff; }
+  .notes-textarea::placeholder { color: #bbb; }
+  .char-count { text-align: right; font-size: 11px; color: #bbb; margin-top: 6px; }
+
+  /* ── STICKY FOOTER ── */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: #fff;
+    padding: 14px 16px 20px;
+    border-top: 1px solid #eee;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px;
+    z-index: 100;
+  }
+  .fee-section .fee-label { font-size: 12px; color: #888; }
+  .fee-section .fee-amount { font-size: 22px; font-weight: 800; color: #1a1a2e; line-height: 1.1; }
+
+  .confirm-btn {
+    flex: 1;
+    background: #e85d5d;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 15px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    letter-spacing: 0.2px;
+  }
+  .confirm-btn:hover { background: #d94f4f; }
+  .confirm-btn:active { transform: scale(0.98); }
+
+  .secure-line {
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+    font-size: 11px; color: #999;
+    margin-top: 6px;
+  }
+  .secure-line svg { width: 12px; height: 12px; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="back-btn" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="topbar-title">
+        <h1>Book Appointment</h1>
+        <p>Schedule an appointment with Dr. Neha Sharma</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="avatar-circle">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div class="topbar-right-text">
+        <div class="hello">Hello, Parent!</div>
+        <div class="role">Parent Account</div>
+      </div>
+      <svg class="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- DOCTOR CARD -->
+    <div class="doctor-card">
+      <div class="doctor-img-wrap">
+        <div class="doctor-img">
+          <!-- Doctor illustration -->
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="40" fill="#dce8ff"/>
+            <ellipse cx="40" cy="32" rx="14" ry="16" fill="#f4c5a0"/>
+            <path d="M20 68 C20 52 60 52 60 68" fill="#3d5af1"/>
+            <path d="M32 44 C32 50 48 50 48 44" fill="#f4c5a0"/>
+            <rect x="33" y="50" width="14" height="6" rx="2" fill="#fff"/>
+            <circle cx="33" cy="60" r="5" fill="#fff"/>
+            <circle cx="47" cy="60" r="5" fill="#fff"/>
+            <rect x="37" y="57" width="6" height="6" fill="#fff"/>
+            <rect x="38.5" y="55" width="3" height="10" fill="#e85d5d"/>
+            <rect x="35" y="59" width="10" height="3" fill="#e85d5d"/>
+          </svg>
+        </div>
+        <div class="verified-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+      </div>
+
+      <div class="doctor-info">
+        <h2>Dr. Neha Sharma</h2>
+        <div class="specialty">Child Development Specialist</div>
+        <div class="doctor-meta">
+          <span class="stars">
+            <span class="star-icon">★</span>
+            <strong>4.8</strong> <span style="color:#aaa">(120 reviews)</span>
+          </span>
+          <span class="meta-dot">|</span>
+          <span class="experience">8+ Years Experience</span>
+        </div>
+        <div class="location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Sector 61, Noida &nbsp;·&nbsp; <span class="dist">1.2 km away</span>
+        </div>
+      </div>
+
+      <div class="happy-badge">
+        <div class="icon-row">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <span class="count">120+</span>
+        </div>
+        <div class="label">Happy Parents</div>
+      </div>
+    </div>
+
+    <!-- DATE SELECTOR -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Select Date
+      </div>
+      <div class="date-row" id="dateRow">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- TIME SLOTS -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Select Time Slot
+      </div>
+      <div class="time-grid" id="timeGrid">
+        <!-- Generated by JS -->
+      </div>
+      <div class="time-note">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        All timings are in IST (Indian Standard Time)
+      </div>
+    </div>
+
+    <!-- APPOINTMENT TYPE -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Appointment Type
+      </div>
+      <div class="appt-type-row">
+        <button class="appt-type-btn active" onclick="selectType(this, 800)" data-price="800">
+          <div class="radio-dot"></div>
+          <div class="appt-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+          </div>
+          <div class="type-name">Video Consultation</div>
+          <div class="type-desc">Consult from the comfort of your home</div>
+          <div class="type-price">₹800</div>
+        </button>
+        <button class="appt-type-btn" onclick="selectType(this, 1200)" data-price="1200">
+          <div class="radio-dot"></div>
+          <div class="appt-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div class="type-name">In-Clinic Consultation</div>
+          <div class="type-desc">Visit doctor at clinic location</div>
+          <div class="type-price">₹1,200</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- PATIENT DETAILS -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        Patient Details
+      </div>
+      <div class="patient-row">
+        <div class="patient-info">
+          <div class="patient-avatar">👦</div>
+          <div>
+            <div class="patient-name">Aarav Sharma</div>
+            <div class="patient-age">8 Years, Male</div>
+          </div>
+        </div>
+        <div class="chevron-right">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+      <button class="add-child-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Another Child
+      </button>
+    </div>
+
+    <!-- ADDITIONAL NOTES -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Additional Notes (Optional)
+      </div>
+      <textarea class="notes-textarea" rows="4" maxlength="200" placeholder="Write any specific concern or note for the doctor..." id="notesArea" oninput="updateChar()"></textarea>
+      <div class="char-count"><span id="charCount">0</span>/200</div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- STICKY FOOTER -->
+  <div class="sticky-footer">
+    <div class="fee-section">
+      <div class="fee-label">Consultation Fee</div>
+      <div class="fee-amount" id="feeAmount">₹800</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; align-items:stretch; gap:4px;">
+      <button class="confirm-btn">Confirm Appointment</button>
+      <div class="secure-line">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        Secure &amp; Confidential
+      </div>
+    </div>
+  </div>
+
+</div><!-- /screen -->
+
+<script>
+  // ── DATE GENERATION ──
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateRow = document.getElementById('dateRow');
+
+  const base = new Date(2025, 4, 24); // May 24, 2025 (Today in image)
+  const labels = ['Today', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const dateNums = [24, 25, 26, 27, 28, 29, 30];
+
+  labels.forEach((label, i) => {
+    const d = document.createElement('button');
+    d.className = 'date-btn' + (i === 0 ? ' active' : '');
+    d.innerHTML = `<span class="day-label">${label}</span><span class="day-num">${dateNums[i]}</span><span class="month">May</span>`;
+    d.onclick = () => {
+      document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+      d.classList.add('active');
+    };
+    dateRow.appendChild(d);
+  });
+
+  // ── TIME SLOTS ──
+  const times = ['10:00 AM','10:30 AM','11:00 AM','11:30 AM','04:00 PM','04:30 PM','05:00 PM','05:30 PM','06:00 PM','06:30 PM','07:00 PM','07:30 PM'];
+  const timeGrid = document.getElementById('timeGrid');
+
+  times.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'time-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = () => {
+      document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+    timeGrid.appendChild(btn);
+  });
+
+  // ── APPOINTMENT TYPE ──
+  function selectType(el, price) {
+    document.querySelectorAll('.appt-type-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('feeAmount').textContent = '₹' + price.toLocaleString('en-IN');
+  }
+
+  // ── NOTES CHAR COUNT ──
+  function updateChar() {
+    document.getElementById('charCount').textContent = document.getElementById('notesArea').value.length;
+  }
+</script>
+</body>
+</html>

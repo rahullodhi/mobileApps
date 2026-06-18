@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nearest Doctors & Centers</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+ 
+  /* ── HEADER ── */
+  .header {
+    background: #fff;
+    padding: 8px 18px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f2f6;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-title h1 { font-size: 16px; font-weight: 700; color: #1a2d5a; line-height: 1.2; }
+  .header-title p  { font-size: 11px; color: #95a0b8; font-weight: 400; margin-top: 1px; }
+
+  .user-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: #f0f4ff;
+    border: 1.5px solid #dde5ff;
+    border-radius: 14px;
+    padding: 7px 10px 7px 7px;
+    cursor: pointer;
+  }
+  .user-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #1a2d5a;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+  }
+  .user-info h4 { font-size: 11px; font-weight: 600; color: #1a2d5a; }
+  .user-info p  { font-size: 10px; color: #95a0b8; }
+  .user-badge .caret { color: #1a2d5a; font-size: 11px; margin-left: 2px; }
+
+  /* ── MAP SECTION ── */
+  #map {
+    width: 100%; height: 195px;
+    position: relative;
+  }
+  /* Override Leaflet default cursor interference */
+  .leaflet-container { font-family: 'Poppins', sans-serif !important; }
+
+  .loc-chip {
+    position: absolute; top: 10px; left: 10px; z-index: 1000;
+    background: #fff;
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.13);
+  }
+  .loc-chip .pin { color: #1a2d5a; font-size: 12px; }
+  .loc-chip .chip-text { font-size: 10px; font-weight: 600; color: #1a2d5a; line-height: 1.4; }
+  .loc-chip .dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
+
+  .map-footer {
+    padding: 10px 14px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff;
+  }
+  .map-footer-left { display: flex; align-items: center; gap: 9px; }
+  .shield-box {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: #edfaf3;
+    display: flex; align-items: center; justify-content: center;
+    color: #22c55e; font-size: 14px; flex-shrink: 0;
+  }
+  .map-text h5 { font-size: 12px; font-weight: 600; color: #1a2d5a; }
+  .map-text p  { font-size: 10px; color: #95a0b8; margin-top: 1px; }
+  .change-loc {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 500; color: #2196F3;
+    cursor: pointer; text-decoration: none; flex-shrink: 0;
+  }
+  .change-loc i { font-size: 11px; }
+
+  /* ── RECOMMENDED ── */
+  .rec-section { padding: 16px 14px 0; }
+
+  .rec-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 13px;
+  }
+  
+
+  .btn-group { display: flex; gap: 7px; }
+ 
+  .ctrl-btn i { font-size: 11px; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: transparent;
+    border-radius: 6px;
+    padding: 4px;
+    margin-bottom: 14px;
+    border: 1px solid #ddd;
+  }
+  .tab {
+    flex: 1; padding: 9px 0;
+    border: none; border-radius: 6px;
+    background: transparent;
+    font-size: 12.5px; font-weight: 500; color: #7a88a8;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.22s ease;
+    background-color: transparent;
+  }
+ 
+
+  /* ── DOCTOR CARDS ── */
+  .doctor-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 13px 13px 11px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border: 1px solid #ddd;
+  }
+  .avatar-wrap { position: relative; flex-shrink: 0; }
+  .avatar-circle {
+    width: 62px; height: 62px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .verified-badge {
+    position: absolute; bottom: 1px; right: 1px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #22c55e;
+    border: 2.5px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 8px;
+  }
+
+  .card-body { flex: 1; min-width: 0; }
+  .card-top  { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+
+  .dist-badge {
+    background: #fff0f3;
+    color: #e03e3e; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 7px; white-space: nowrap; flex-shrink: 0;
+  }
+  .specialty { font-size: 11.5px; color: #95a0b8; margin: 2px 0 7px; }
+
+  .meta-row {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11.5px; color: #485372; margin-bottom: 5px;
+  }
+  .star-icon { color: #f59e0b; font-size: 12px; }
+  .sep { color: #c5ccd9; }
+ 
+  .book-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .book-btn {
+    background: #1a2d5a; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 15px;
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
+    transition: background 0.18s;
+    letter-spacing: 0.01em;
+  }
+  .book-btn:hover { background: #233f7a; }
+  .book-btn i { font-size: 12px; }
+  .book-btn.red { background: #e53e3e; }
+  .book-btn.red:hover { background: #c53030; }
+
+  /* ── THERAPY SECTION ── */
+  .therapy-section { padding: 18px 14px 0; }
+  .therapy-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  
+  .th-icon {
+    width: 54px; height: 54px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .th-icon.purple { background: #ede9fe; }
+  .th-icon.orange { background: #fff7ed; }
+  .th-icon.green  { background: #f0fdf4; }
+
+
+  /* ── FOOTER NOTE ── */
+  .footer-note {
+    margin: 14px 14px 20px;
+    padding: 11px 14px;
+    background: #eef2ff;
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-note i { color: #1a2d5a; font-size: 14px; flex-shrink: 0; }
+  .footer-note p { font-size: 11px; color: #485372; }
+
+  /* ── LEAFLET CUSTOM ICONS ── */
+  .main-pin {
+    width: 38px; height: 38px; position: relative;
+  }
+  .main-pin-inner {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #1a2d5a;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 14px rgba(26,45,90,0.45);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .main-pin-ring {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: rgba(26,45,90,0.12);
+    border: 1.5px solid rgba(26,45,90,0.18);
+  }
+  .red-pin {
+    width: 28px; height: 34px;
+    position: relative;
+  }
+  .red-pin-body {
+    width: 28px; height: 28px;
+    border-radius: 50% 50% 50% 0;
+    background: #e53e3e;
+    transform: rotate(-45deg);
+    border: 2.5px solid #fff;
+    box-shadow: 0 3px 10px rgba(229,62,62,0.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .red-pin-dot {
+    width: 8px; height: 8px;
+    background: #fff; border-radius: 50%;
+    transform: rotate(45deg);
+  }
+</style>
+</head>
+<body>
+       <header class="app-header">
+
+    <div class="header-left">
+
+        <a href="login.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path d="M15 18L9 12L15 6"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+        </a>
+
+        <div class="title-area">
+            <h1>Book Appointment</h1>
+        </div>
+
+    </div>
+
+    <div class="profile-card">
+
+        <div class="profile-icon">
+            <img src="https://media.licdn.com/dms/image/v2/D4D03AQGfmmtap9UGSw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1668447329811?e=2147483647&v=beta&t=0KlNkR86z7JOy1hLVPWrASGpK72NTRUy26PAxBsZ-QY" alt="">
+        </div>
+
+        <!-- <div class="profile-info">
+            <h4>Hello, Parent!</h4>
+            <span>Parent Account</span>
+        </div> -->
+
+    </div>
+
+</header>
+
+    <!-- Map -->
+    <div class="map-wrap">
+      <div style="position: relative;">
+        <div id="map"></div>
+        <div class="loc-chip">
+          <i class="fas fa-location-dot pin"></i>
+          <div class="chip-text">Your Location<br>Sector 62, Noida, UP</div>
+          <div class="dot"></div>
+        </div>
+      </div>
+      <div class="map-footer">
+        <div class="map-footer-left">
+          <div class="shield-box"><i class="fas fa-shield-halved"></i></div>
+          <div class="map-text">
+            <h5>Showing results within 10 km</h5>
+            <p>Based on your current location</p>
+          </div>
+        </div>
+        <a class="change-loc" href="#"><i class="fas fa-location-crosshairs"></i> Change Location</a>
+      </div>
+    </div>
+
+    <!-- Recommended for You -->
+    <div class="rec-section">
+      <div class="rec-header">
+        <div class="rec-title">
+          <h2>Recommended for You</h2>
+          <p>Top-rated professionals and centers</p>
+        </div>
+        <div class="btn-group">
+          <button class="ctrl-btn"><i class="fas fa-sliders"></i> Filter <i class="fas fa-chevron-down" style="font-size:9px"></i></button>
+          <button class="ctrl-btn"><i class="fas fa-arrow-up-short-wide"></i> Sort <i class="fas fa-chevron-down" style="font-size:9px"></i></button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tab-doc">
+          <i class="fas fa-user-doctor"></i> Doctors
+        </button>
+        <button class="tab" id="tab-th">
+          <i class="fas fa-building-user"></i> Therapy Centers
+        </button>
+      </div>
+
+      <!-- Doctors Content -->
+      <div id="doc-content">
+
+        <!-- Dr. Neha Sharma -->
+        <div class="doctor-card">
+          <div class="avatar-wrap">
+            <div class="avatar-circle" style="background: linear-gradient(135deg, #6881be, #1a2d5a);">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqfZ7N_SqTDUWZW7Oi24e9p9c8IFU-iy4g&s" alt="">
+            </div>
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="doc-name">Dr. Neha Sharma</span>
+              <span class="dist-badge">1.2 km</span>
+            </div>
+            <div class="specialty">Child Development Specialist</div>
+            <div class="meta-row">
+              <i class="fas fa-star star-icon"></i>
+              <span>4.8 (120 reviews)</span>
+              <span class="sep">|</span>
+              <span>8+ Years Exp.</span>
+            </div>
+            <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 61, Noida</div>
+            <div class="book-row">
+              <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dr. Arjun Verma -->
+        <div class="doctor-card">
+          <div class="avatar-wrap">
+            <div class="avatar-circle" style="background: linear-gradient(135deg, #5b79bb, #1e3466);">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9QmC3-Y8tRCj0wOy4w6EszbjBija21u0xPQ&s" alt="">
+
+            </div>
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="doc-name">Dr. Arjun Verma</span>
+              <span class="dist-badge">2.4 km</span>
+            </div>
+            <div class="specialty">Pediatrician</div>
+            <div class="meta-row">
+              <i class="fas fa-star star-icon"></i>
+              <span>4.7 (95 reviews)</span>
+              <span class="sep">|</span>
+              <span>10+ Years Exp.</span>
+            </div>
+            <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 59, Noida</div>
+            <div class="book-row">
+              <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dr. Priyanka Nair -->
+        <div class="doctor-card">
+          <div class="avatar-wrap">
+            <div class="avatar-circle" style="background: linear-gradient(135deg, #9b72cf, #5c2a8a);">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpl69l9QTotvkYqjyt9f-mtMmSrah-E5trZw&s" alt="">
+            </div>
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="doc-name">Dr. Priyanka Nair</span>
+              <span class="dist-badge">3.1 km</span>
+            </div>
+            <div class="specialty">Child Psychologist</div>
+            <div class="meta-row">
+              <i class="fas fa-star star-icon"></i>
+              <span>4.9 (150 reviews)</span>
+              <span class="sep">|</span>
+              <span>7+ Years Exp.</span>
+            </div>
+            <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 63, Noida</div>
+            <div class="book-row">
+              <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /doc-content -->
+
+      <!-- Therapy Centers Content (hidden by default) -->
+      <div id="th-content" style="display:none;">
+        <!-- Cards will mirror therapy section below -->
+        <div class="doctor-card">
+          <div class="avatar-wrap">
+            <div class="avatar-circle" style="background: linear-gradient(135deg, #c4b5fd, #7c3aed); border-radius: 14px; width:62px; height:62px; font-size:26px;">🏠</div>
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="doc-name" style="font-size:13px;">Bright Steps Therapy Center</span>
+              <span class="dist-badge">1.6 km</span>
+            </div>
+            <div class="specialty">Occupational, Speech &amp; Behavioral Therapy</div>
+            <div class="meta-row">
+              <i class="fas fa-star star-icon"></i>
+              <span>4.6 (80 reviews)</span>
+              <span class="sep">|</span>
+              <span>Est. 2018</span>
+            </div>
+            <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 62, Noida</div>
+            <div class="book-row">
+              <a href="calender.html" class="login-btn" ><i class="far fa-calendar-check"></i> Book Appointment</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /rec-section -->
+
+    <!-- Nearby Therapy Centers -->
+    <div class="therapy-section">
+      <div class="therapy-header">
+        <h2>Nearby Therapy Centers</h2>
+        <a class="view-all" href="#">View All <i class="fas fa-chevron-right" style="font-size:11px"></i></a>
+      </div>
+
+      <!-- Bright Steps -->
+      <div class="therapy-card">
+        <div class="th-icon purple">🏠</div>
+        <div class="card-body">
+          <div class="card-top">
+            <span class="th-name">Bright Steps Therapy Center</span>
+            <span class="dist-badge">1.6 km</span>
+          </div>
+          <div class="specialty">Occupational, Speech &amp; Behavioral Therapy</div>
+          <div class="meta-row">
+            <i class="fas fa-star star-icon"></i>
+            <span>4.6 (80 reviews)</span>
+            <span class="sep">|</span>
+            <span>Established 2018</span>
+          </div>
+          <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 62, Noida</div>
+          <div class="book-row">
+            <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hope & Heal -->
+      <div class="therapy-card">
+        <div class="th-icon orange">🌟</div>
+        <div class="card-body">
+          <div class="card-top">
+            <span class="th-name">Hope &amp; Heal Child Therapy</span>
+            <span class="dist-badge">2.8 km</span>
+          </div>
+          <div class="specialty">Speech, Occupational &amp; Special Education</div>
+          <div class="meta-row">
+            <i class="fas fa-star star-icon"></i>
+            <span>4.7 (64 reviews)</span>
+            <span class="sep">|</span>
+            <span>Established 2019</span>
+          </div>
+          <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 58, Noida</div>
+          <div class="book-row">
+            <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Care & Grow -->
+      <div class="therapy-card">
+        <div class="th-icon green">🌱</div>
+        <div class="card-body">
+          <div class="card-top">
+            <span class="th-name">Care &amp; Grow Therapy Hub</span>
+            <span class="dist-badge">3.7 km</span>
+          </div>
+          <div class="specialty">ABA, Sensory Integration &amp; Counseling</div>
+          <div class="meta-row">
+            <i class="fas fa-star star-icon"></i>
+            <span>4.5 (52 reviews)</span>
+            <span class="sep">|</span>
+            <span>Established 2020</span>
+          </div>
+          <div class="loc-row"><i class="fas fa-location-dot"></i> Sector 61, Noida</div>
+          <div class="book-row">
+            <a href="calender.html" class="login-btn"><i class="far fa-calendar-check"></i> Book Appointment</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /therapy-section -->
+
+    <!-- Footer Note -->
+    <div class="footer-note">
+      <i class="fas fa-circle-info"></i>
+      <p>Distance is calculated from your current location.</p>
+    </div>
+
+
+<script>
+$(function () {
+
+  /* ── Leaflet Map ── */
+  var noida = [28.6262, 77.3651];
+
+  var map = L.map('map', {
+    center: noida,
+    zoom: 14,
+    zoomControl: false,
+    attributionControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    keyboard: false,
+    touchZoom: false,
+    tap: false
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: ''
+  }).addTo(map);
+
+  /* Main location pin (dark navy with ripple ring) */
+  var mainIcon = L.divIcon({
+    html: `
+      <div style="position:relative;width:38px;height:38px;">
+        <div style="
+          position:absolute;top:50%;left:50%;
+          transform:translate(-50%,-50%);
+          width:68px;height:68px;border-radius:50%;
+          background:rgba(26,45,90,0.13);
+          border:1.5px solid rgba(26,45,90,0.20);
+        "></div>
+        <div style="
+          position:relative;z-index:2;
+          width:38px;height:38px;border-radius:50%;
+          background:#1a2d5a;border:3px solid #fff;
+          box-shadow:0 4px 14px rgba(26,45,90,0.45);
+          display:flex;align-items:center;justify-content:center;
+          color:#fff;font-size:16px;
+        "><i class='fas fa-location-dot'></i></div>
+      </div>`,
+    iconSize: [38, 38],
+    iconAnchor: [19, 19],
+    className: ''
+  });
+
+  /* Red clinic/doctor pins */
+  function redPin() {
+    return L.divIcon({
+      html: `
+        <div style="
+          width:26px;height:32px;
+          border-radius:50% 50% 50% 0;
+          background:#e53e3e;
+          transform:rotate(-45deg);
+          border:2.5px solid #fff;
+          box-shadow:0 3px 10px rgba(229,62,62,0.45);
+          display:flex;align-items:center;justify-content:center;
+        ">
+          <div style="
+            width:8px;height:8px;
+            background:#fff;border-radius:50%;
+            transform:rotate(45deg);
+          "></div>
+        </div>`,
+      iconSize: [26, 32],
+      iconAnchor: [7, 28],
+      className: ''
+    });
+  }
+
+  /* Place markers */
+  L.marker(noida, { icon: mainIcon }).addTo(map);
+  L.marker([28.619,  77.357], { icon: redPin() }).addTo(map);
+  L.marker([28.634,  77.377], { icon: redPin() }).addTo(map);
+  L.marker([28.616,  77.384], { icon: redPin() }).addTo(map);
+
+  /* ── Tab toggle ── */
+  $('#tab-doc').on('click', function () {
+    $(this).addClass('active');
+    $('#tab-th').removeClass('active');
+    $('#doc-content').show();
+    $('#th-content').hide();
+  });
+
+  $('#tab-th').on('click', function () {
+    $(this).addClass('active');
+    $('#tab-doc').removeClass('active');
+    $('#th-content').show();
+    $('#doc-content').hide();
+  });
+
+  /* ── Book Appointment ── */
+  $(document).on('click', '.book-btn', function () {
+    var $card = $(this).closest('.doctor-card, .therapy-card');
+    var name = $card.find('.doc-name, .th-name').first().text().trim();
+    if (!name) return;
+
+    // Mini toast
+    var $toast = $('<div>').css({
+      position: 'fixed', bottom: '30px', left: '50%',
+      transform: 'translateX(-50%)',
+      background: '#1a2d5a', color: '#fff',
+      padding: '11px 22px', borderRadius: '30px',
+      fontSize: '13px', fontFamily: 'Poppins, sans-serif',
+      fontWeight: 500, zIndex: 9999,
+      boxShadow: '0 6px 20px rgba(0,0,0,0.22)',
+      whiteSpace: 'nowrap'
+    }).text('📅 Appointment requested with ' + name);
+
+    $('body').append($toast);
+    setTimeout(function () { $toast.fadeOut(300, function () { $(this).remove(); }); }, 2200);
+  });
+
+  /* ── Back button ── */
+  $('.back-btn').on('click', function () {
+    var $t = $('<div>').css({
+      position: 'fixed', bottom: '30px', left: '50%',
+      transform: 'translateX(-50%)',
+      background: '#333', color: '#fff',
+      padding: '10px 20px', borderRadius: '30px',
+      fontSize: '12px', fontFamily: 'Poppins, sans-serif',
+      zIndex: 9999
+    }).text('← Going back…');
+    $('body').append($t);
+    setTimeout(function () { $t.fadeOut(300, function () { $(this).remove(); }); }, 1500);
+  });
+
+});
+</script>
+</body>
+</html>
